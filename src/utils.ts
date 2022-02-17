@@ -21,13 +21,19 @@ export function escapeMarkdownTokens(text: string) {
     .replace(/>/g, "\\>");
 }
 
+export function getGithubUrl() {
+  const githubUrl = getInput("github-url");
+  return githubUrl;
+}
+
 export function getRunInformation() {
   const [owner, repo] = (process.env.GITHUB_REPOSITORY || "").split("/");
+  const githubUrl = getGithubUrl();
   return {
     owner,
     repo,
     ref: process.env.GITHUB_SHA || undefined,
-    branchUrl: `https://github.com/${process.env.GITHUB_REPOSITORY}/tree/${process.env.GITHUB_REF}`,
+    branchUrl: `${githubUrl}/${process.env.GITHUB_REPOSITORY}/tree/${process.env.GITHUB_REF}`,
     runId: process.env.GITHUB_RUN_ID || undefined,
     runNum: process.env.GITHUB_RUN_NUMBER || undefined,
   };
