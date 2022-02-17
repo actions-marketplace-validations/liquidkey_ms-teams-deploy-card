@@ -6,6 +6,10 @@ branding:
   color: purple
 
 inputs:
+  github-base-url:
+    description: This is github api base url. Provide this if you are using enterprise github
+    required: false
+    default: https://api.github.com
   github-url:
     description: Provide this if you are using enterprise github
     required: false

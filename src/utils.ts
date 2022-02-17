@@ -26,6 +26,16 @@ export function getGithubUrl() {
   return githubUrl;
 }
 
+export function getOctokit() {
+  const baseUrl = getInput("github-base-url");
+  const githubToken = getInput("github-token", { required: true });
+  const octokit = new Octokit({ 
+    auth: `token ${githubToken}`,
+    baseUrl: `${baseUrl}`
+  });
+  return octokit;
+}
+
 export function getRunInformation() {
   const [owner, repo] = (process.env.GITHUB_REPOSITORY || "").split("/");
   const githubUrl = getGithubUrl();
@@ -42,9 +52,8 @@ export function getRunInformation() {
 export async function getOctokitCommit() {
   const runInfo = getRunInformation();
   info("Workflow run information: " + JSON.stringify(runInfo, undefined, 2));
-
-  const githubToken = getInput("github-token", { required: true });
-  const octokit = new Octokit({ auth: `token ${githubToken}` });
+  
+  const octokit = getOctokit();
 
   return await octokit.repos.getCommit({
     owner: runInfo.owner,
@@ -93,9 +102,8 @@ export async function formatAndNotify(
 }
 
 export async function getWorkflowRunStatus() {
-  const runInfo = getRunInformation();
-  const githubToken = getInput("github-token", { required: true });
-  const octokit = new Octokit({ auth: `token ${githubToken}` });
+  const runInfo = getRunInformation();  
+  const octokit = getOctokit();
   const workflowJobs = await octokit.actions.listJobsForWorkflowRun({
     owner: runInfo.owner,
     repo: runInfo.repo,
