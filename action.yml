@@ -6,6 +6,10 @@ branding:
   color: purple
 
 inputs:
+  github-url:
+    description: Provide this if you are using enterprise github
+    required: false
+    default: https://github.com
   webhook-uri:
     description: Microsoft Teams webhook URI
     required: true
