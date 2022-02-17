@@ -5,7 +5,7 @@ import { getInput } from "@actions/core";
 
 import { WebhookBody } from "../models";
 import { CONCLUSION_THEMES } from "../constants";
-import { renderActions } from "../utils";
+import { renderActions, getGithubUrl } from "../utils";
 
 export const OCTOCAT_LOGO_URL =
   "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png";
@@ -20,7 +20,8 @@ export function formatCozyLayout(
     .tz(timezone)
     .format("dddd, MMMM Do YYYY, h:mm:ss a z");
   const webhookBody = new WebhookBody();
-  const repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+  const githubUrl = getGithubUrl();
+  const repoUrl = `${githubUrl}/${process.env.GITHUB_REPOSITORY}`;
   const shortSha = process.env.GITHUB_SHA?.substr(0, 7);
 
   // Set status and elapsedSeconds

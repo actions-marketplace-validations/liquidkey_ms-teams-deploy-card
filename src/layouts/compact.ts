@@ -2,6 +2,7 @@ import { Octokit } from "@octokit/rest";
 import { WebhookBody } from "../models";
 import { getInput } from "@actions/core";
 import { CONCLUSION_THEMES } from "../constants";
+import { getGithubUrl } from "../utils";
 
 export function formatCompactLayout(
   commit: Octokit.Response<Octokit.ReposGetCommitResponse>,
@@ -9,7 +10,8 @@ export function formatCompactLayout(
   elapsedSeconds?: number
 ) {
   const author = commit.data.author;
-  const repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+  const githubUrl = getGithubUrl();
+  const repoUrl = `${githubUrl}/${process.env.GITHUB_REPOSITORY}`;
   const shortSha = process.env.GITHUB_SHA?.substr(0, 7);
   const runLink = `${repoUrl}/actions/runs/${process.env.GITHUB_RUN_ID}`;
   const webhookBody = new WebhookBody();

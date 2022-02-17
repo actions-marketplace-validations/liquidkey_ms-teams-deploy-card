@@ -1,6 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { getInput, warning, info } from "@actions/core";
 import yaml from "yaml";
+import { getGithubUrl } from "../utils";
 
 import { escapeMarkdownTokens, renderActions } from "../utils";
 import { Fact, PotentialAction } from "../models";
@@ -39,7 +40,8 @@ export function formatCompleteLayout(
   conclusion: string,
   elapsedSeconds?: number
 ) {
-  const repoUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+  const githubUrl = getGithubUrl();
+  const repoUrl = `${githubUrl}/${process.env.GITHUB_REPOSITORY}`;
   const branchUrl = `${repoUrl}/tree/${process.env.GITHUB_REF}`;
   const webhookBody = formatCozyLayout(commit, conclusion, elapsedSeconds);
   const section = webhookBody.sections[0];
