@@ -31,7 +31,7 @@ export function getOctokit() {
   const githubToken = getInput("github-token", { required: true });
   const octokit = new Octokit({ 
     auth: `token ${githubToken}`,
-    baseUrl: `${baseUrl}`
+    baseUrl: '${baseUrl}'
   });
   return octokit;
 }
