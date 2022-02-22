@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { setOutput, info, getInput, warning } from "@actions/core";
-import axios, { AxiosResponse } from "axios";
+import fetch, { Response } from "node-fetch";
 import moment from "moment";
 import yaml from "yaml";
 
@@ -29,7 +29,7 @@ export function getGithubUrl() {
 export function getOctokit() {
   const baseUrl = getInput("github-base-url");
   const githubToken = getInput("github-token", { required: true });
-  const octokit = new Octokit({
+  const octokit = new Octokit({ 
     auth: `token ${githubToken}`,
     baseUrl: '${baseUrl}'
   });
@@ -52,7 +52,7 @@ export function getRunInformation() {
 export async function getOctokitCommit() {
   const runInfo = getRunInformation();
   info("Workflow run information: " + JSON.stringify(runInfo, undefined, 2));
-
+  
   const octokit = getOctokit();
 
   return await octokit.repos.getCommit({
@@ -66,15 +66,19 @@ export function submitNotification(webhookBody: WebhookBody) {
   const webhookUri = getInput("webhook-uri", { required: true });
   const webhookBodyJson = JSON.stringify(webhookBody, undefined, 2);
 
-  return axios.post(webhookUri, webhookBody, {
+  return fetch(webhookUri, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
-    }
-  }).then((response: AxiosResponse) => {
-    setOutput("webhook-body", webhookBodyJson);
-    info(webhookBodyJson);
-    return response;
-  }).catch(console.error);  
+    },
+    body: webhookBodyJson,
+  })
+    .then((response: Response) => {
+      setOutput("webhook-body", webhookBodyJson);
+      info(webhookBodyJson);
+      return response;
+    })
+    .catch(console.error);
 }
 
 export async function formatAndNotify(
@@ -98,7 +102,7 @@ export async function formatAndNotify(
 }
 
 export async function getWorkflowRunStatus() {
-  const runInfo = getRunInformation();
+  const runInfo = getRunInformation();  
   const octokit = getOctokit();
   const workflowJobs = await octokit.actions.listJobsForWorkflowRun({
     owner: runInfo.owner,
