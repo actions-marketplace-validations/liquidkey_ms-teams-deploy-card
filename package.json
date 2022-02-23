@@ -10,7 +10,6 @@
   "dependencies": {
     "@actions/core": "^1.2.2",
     "@octokit/rest": "^16.43.1",
-    "esm": "^3.2.25",
     "moment-timezone": "^0.5.27",
     "node-fetch-with-proxy": "^0.1.6",
     "yaml": "^1.10.0"
